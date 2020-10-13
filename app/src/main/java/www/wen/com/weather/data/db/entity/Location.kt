@@ -1,4 +1,4 @@
-package www.wen.com.weather.data.reponse
+package www.wen.com.weather.data.db.entity
 
 
 import com.google.gson.annotations.SerializedName
