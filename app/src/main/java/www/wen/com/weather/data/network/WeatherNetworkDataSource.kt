@@ -1,7 +1,7 @@
 package www.wen.com.weather.data.network
 
 import androidx.lifecycle.LiveData
-import www.wen.com.weather.data.CurrentWeatherResponse
+import www.wen.com.weather.data.network.reponse.CurrentWeatherResponse
 
 /**
  * @author WEN

@@ -4,19 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import www.wen.com.weather.R
-import www.wen.com.weather.data.ApixuWeatherApiService
-import www.wen.com.weather.data.network.ConnectivityInterceptorImpl
-import www.wen.com.weather.data.network.WeatherNetworkDataSourceImpl
+import www.wen.com.weather.ui.base.ScopedFragment
 
-class CurrentWeatherFragment : Fragment() {
+class CurrentWeatherFragment : ScopedFragment(),DIAware{
+
+    override val di: DI by closestDI()
+
+    private val factory by instance<CurrentWeatherFactory>()
 
     companion object {
         fun newInstance() =
@@ -34,14 +38,17 @@ class CurrentWeatherFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CurrentWeatherViewModel::class.java)
-        val weatherNetworkDataSource =  WeatherNetworkDataSourceImpl( ApixuWeatherApiService.invoke(ConnectivityInterceptorImpl(requireContext())))
-        weatherNetworkDataSource.downloadCurrentWeather.observe(viewLifecycleOwner, Observer {
+        viewModel = ViewModelProvider(this,factory).get(CurrentWeatherViewModel::class.java)
+
+        bindUI()
+    }
+
+    private fun bindUI() = launch(Dispatchers.Main) {
+        val currentWeatherEntry = viewModel.weather.await()
+        currentWeatherEntry.observe(viewLifecycleOwner, Observer {
+            if(it == null) return@Observer
             textView.text = it.toString()
         })
-        GlobalScope.launch(Dispatchers.Main) {
-            weatherNetworkDataSource.fetchCurrentWeather("London","en")
-        }
     }
 
 }

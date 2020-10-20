@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import www.wen.com.weather.data.ApixuWeatherApiService
-import www.wen.com.weather.data.CurrentWeatherResponse
+import www.wen.com.weather.data.network.reponse.CurrentWeatherResponse
 import www.wen.com.weather.internal.NoConnectivityException
 
 /**

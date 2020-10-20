@@ -10,6 +10,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import www.wen.com.weather.BuildConfig
+import www.wen.com.weather.data.network.reponse.CurrentWeatherResponse
 
 /**
  * @author WEN
@@ -29,7 +31,7 @@ interface ApixuWeatherApiService {
 
     companion object {
 
-         operator fun invoke(connectivityInterceptor: ConnectivityInterceptor): ApixuWeatherApiService {
+        operator fun invoke(connectivityInterceptor: ConnectivityInterceptor): ApixuWeatherApiService {
             val requestInterceptor = Interceptor { chain ->
                 val url = chain.request()
                     .url
@@ -45,7 +47,14 @@ interface ApixuWeatherApiService {
             val okHttpClient = OkHttpClient
                 .Builder()
                 .addInterceptor(requestInterceptor)
-                .addInterceptor(HttpLoggingInterceptor())
+                .addInterceptor(
+                    HttpLoggingInterceptor().setLevel(
+                        if (BuildConfig.DEBUG)
+                            HttpLoggingInterceptor.Level.BODY
+                        else
+                            HttpLoggingInterceptor.Level.NONE
+                    )
+                )
                 .addInterceptor(connectivityInterceptor)
                 .build()
 

@@ -1,6 +1,7 @@
-package www.wen.com.weather.data
+package www.wen.com.weather.data.network.reponse
 
 import com.google.gson.annotations.SerializedName
+import www.wen.com.weather.data.CurrentWeatherEntry
 import www.wen.com.weather.data.db.entity.Location
 
 
